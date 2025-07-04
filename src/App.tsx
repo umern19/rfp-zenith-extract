@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DocumentProvider } from "./contexts/DocumentContext";
+import MainNavigation from "./components/MainNavigation";
 import Index from "./pages/Index";
 import TranslationViewer from "./pages/TranslationViewer";
 import FeatureExtraction from "./pages/FeatureExtraction";
@@ -20,13 +21,16 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/translate" element={<TranslationViewer />} />
-            <Route path="/features" element={<FeatureExtraction />} />
-            <Route path="/scope" element={<ScopeExtraction />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            <MainNavigation />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/translate" element={<TranslationViewer />} />
+              <Route path="/features" element={<FeatureExtraction />} />
+              <Route path="/scope" element={<ScopeExtraction />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </DocumentProvider>

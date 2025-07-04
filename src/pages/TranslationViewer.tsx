@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, RotateCcw, Globe, Sparkles, ZoomIn, ZoomOut } from 'lucide-react';
+import { ArrowRight, RotateCcw, Globe, Sparkles, ZoomIn, ZoomOut, ArrowLeft } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { useDocument } from '@/contexts/DocumentContext';
 import { Button } from '@/components/ui/button';
@@ -25,17 +25,41 @@ const TranslationViewer = () => {
       return;
     }
 
-    // Auto-start translation
-    handleTranslation();
+    // Auto-start translation if not already translated
+    if (!translatedContent) {
+      handleTranslation();
+    }
   }, [uploadedFile]);
 
   const handleTranslation = async () => {
     setIsTranslating(true);
     
-    // Simulate API call
+    // Simulate API call with more realistic content
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    setTranslatedContent("Translated content would appear here...");
+    const sampleTranslation = `Request for Proposal - Software Development Services
+
+Overview:
+We are seeking a qualified software development partner to create a comprehensive web-based application for our organization. This project requires expertise in modern web technologies and agile development methodologies.
+
+Project Scope:
+The proposed solution should include user authentication, data management capabilities, responsive design for mobile and desktop platforms, and integration with third-party APIs. The application must support multiple user roles and provide real-time collaboration features.
+
+Technical Requirements:
+- Frontend development using React or similar modern framework
+- Backend API development with Node.js or Python
+- Database design and implementation (PostgreSQL preferred)
+- Cloud deployment on AWS or Azure
+- Security implementation including encryption and GDPR compliance
+- Performance optimization for high-traffic usage
+
+Timeline:
+The project is expected to be completed within 4-6 months from contract signing. We require weekly progress reports and bi-weekly stakeholder meetings.
+
+Budget Range:
+Our allocated budget for this project is between $150,000 - $200,000, including all development, testing, and deployment activities.`;
+    
+    setTranslatedContent(sampleTranslation);
     setIsTranslating(false);
     
     toast({
@@ -69,65 +93,59 @@ const TranslationViewer = () => {
   };
 
   if (!uploadedFile) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-slate-400 text-lg">No document uploaded</p>
+          <Button onClick={() => navigate('/')} className="bg-cyan-500 hover:bg-cyan-600">
+            Upload Document
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
-      <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="text-slate-400 hover:text-white"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Re-Upload
-              </Button>
-              <div className="h-6 border-l border-slate-600"></div>
-              <h1 className="text-xl font-semibold text-white">Translation Viewer</h1>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTranslation}
-                disabled={isTranslating}
-                className="border-slate-600 hover:border-cyan-400"
-              >
-                <Globe className="h-4 w-4 mr-2" />
-                Translate Again
-              </Button>
-              
-              <Button
-                onClick={handleProceedToFeatures}
-                disabled={isTranslating || !translatedContent}
-                className="bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Proceed to Feature Extraction
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen">
       {/* Content */}
       <div className="max-w-7xl mx-auto p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-white">Translation Viewer</h1>
+            <div className="text-sm text-slate-400">
+              {uploadedFile.name}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTranslation}
+              disabled={isTranslating}
+              className="border-slate-600 hover:border-cyan-400"
+            >
+              <Globe className="h-4 w-4 mr-2" />
+              Translate Again
+            </Button>
+            
+            <Button
+              onClick={handleProceedToFeatures}
+              disabled={isTranslating || !translatedContent}
+              className="bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
+            >
+              <ArrowRight className="h-4 w-4 mr-2" />
+              Extract Features
+            </Button>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Original PDF Panel */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6 animate-slide-in-right">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Original Document</h2>
-                <div className="text-sm text-slate-400">
-                  {uploadedFile.name}
-                </div>
               </div>
               
               {/* PDF Controls */}
@@ -245,8 +263,8 @@ const TranslationViewer = () => {
                       <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                       <span className="text-sm font-medium">Translation Complete</span>
                     </div>
-                    <div className="text-white">
-                      <p className="leading-relaxed">{translatedContent}</p>
+                    <div className="text-white prose prose-invert max-w-none">
+                      <div className="whitespace-pre-wrap leading-relaxed">{translatedContent}</div>
                     </div>
                   </div>
                 ) : (
