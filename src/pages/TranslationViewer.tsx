@@ -1,17 +1,26 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, RotateCcw, Globe, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RotateCcw, Globe, Sparkles, ZoomIn, ZoomOut } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { useDocument } from '@/contexts/DocumentContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 
+// Set up PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url,
+).toString();
+
 const TranslationViewer = () => {
   const navigate = useNavigate();
   const { uploadedFile, translatedContent, setTranslatedContent } = useDocument();
   const [isTranslating, setIsTranslating] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [numPages, setNumPages] = useState<number>();
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [scale, setScale] = useState<number>(1.2);
 
   useEffect(() => {
     if (!uploadedFile) {
@@ -40,6 +49,26 @@ const TranslationViewer = () => {
 
   const handleProceedToFeatures = () => {
     navigate('/features');
+  };
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+
+  const goToPrevPage = () => {
+    setPageNumber(page => Math.max(page - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setPageNumber(page => Math.min(page + 1, numPages || 1));
+  };
+
+  const zoomIn = () => {
+    setScale(scale => Math.min(scale + 0.2, 2.0));
+  };
+
+  const zoomOut = () => {
+    setScale(scale => Math.max(scale - 0.2, 0.6));
   };
 
   if (!uploadedFile) {
@@ -104,13 +133,80 @@ const TranslationViewer = () => {
                 </div>
               </div>
               
-              <div className="bg-slate-900/50 rounded-lg p-8 h-full flex items-center justify-center border border-slate-700">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-20 bg-slate-700 rounded-lg mx-auto flex items-center justify-center">
-                    <span className="text-slate-400 font-bold text-sm">PDF</span>
-                  </div>
-                  <p className="text-slate-400">PDF viewer would be integrated here</p>
-                  <p className="text-xs text-slate-500">Using react-pdf or PDF.js</p>
+              {/* PDF Controls */}
+              <div className="flex items-center gap-2 py-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToPrevPage}
+                  disabled={pageNumber <= 1}
+                  className="border-slate-600"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                
+                <span className="text-slate-400 text-sm px-2">
+                  {pageNumber} of {numPages || 0}
+                </span>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToNextPage}
+                  disabled={pageNumber >= (numPages || 1)}
+                  className="border-slate-600"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                
+                <div className="ml-4 flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={zoomOut}
+                    className="border-slate-600"
+                  >
+                    <ZoomOut className="h-4 w-4" />
+                  </Button>
+                  
+                  <span className="text-slate-400 text-sm px-2">
+                    {Math.round(scale * 100)}%
+                  </span>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={zoomIn}
+                    className="border-slate-600"
+                  >
+                    <ZoomIn className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="bg-slate-900/50 rounded-lg p-4 h-full overflow-auto border border-slate-700">
+                <div className="flex justify-center">
+                  <Document
+                    file={uploadedFile}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    loading={
+                      <div className="flex items-center justify-center p-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-2 border-cyan-400 border-t-transparent"></div>
+                      </div>
+                    }
+                    error={
+                      <div className="text-center p-8 text-slate-400">
+                        <p>Failed to load PDF</p>
+                        <p className="text-sm">Please try uploading again</p>
+                      </div>
+                    }
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      scale={scale}
+                      className="border border-slate-600 rounded"
+                    />
+                  </Document>
                 </div>
               </div>
             </div>
