@@ -9,7 +9,7 @@ import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { addToHistory } = useDocument();
+  const { setUploadedFile } = useDocument();
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -28,7 +28,7 @@ const Index = () => {
     // Simulate upload delay for smooth animation
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    addToHistory(file);
+    setUploadedFile(file);
     setIsUploading(false);
     
     toast({
@@ -60,7 +60,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full space-y-8 animate-fade-in">
         {/* Header */}
         <div className="text-center space-y-4">
