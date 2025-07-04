@@ -119,10 +119,10 @@ const TranslationViewer = () => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto p-6">
-        <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* Original PDF Panel */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6 animate-slide-in-right">
-            <div className="space-y-4 h-full">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Original Document</h2>
                 <div className="text-sm text-slate-400">
@@ -181,7 +181,7 @@ const TranslationViewer = () => {
                 </div>
               </div>
               
-              <div className="bg-slate-900/50 rounded-lg p-4 h-full overflow-auto border border-slate-700">
+              <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700 h-[calc(100vh-280px)] overflow-auto">
                 <div className="flex justify-center">
                   <Document
                     file={uploadedFile}
@@ -211,7 +211,7 @@ const TranslationViewer = () => {
 
           {/* Translated Panel */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6 animate-slide-in-left">
-            <div className="space-y-4 h-full">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Translated Document</h2>
                 {isTranslating && (
@@ -222,7 +222,7 @@ const TranslationViewer = () => {
                 )}
               </div>
               
-              <div className="bg-slate-900/50 rounded-lg p-8 h-full border border-slate-700">
+              <div className="bg-slate-900/50 rounded-lg p-8 border border-slate-700 h-[calc(100vh-280px)] overflow-auto">
                 {isTranslating ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center space-y-6">

@@ -153,11 +153,11 @@ const FeatureExtraction = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Document Preview */}
           <div className="lg:col-span-2">
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6 h-[calc(100vh-160px)]">
-              <div className="space-y-4 h-full">
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6">
+              <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-white">Document Analysis</h2>
                 
-                <div className="bg-slate-900/50 rounded-lg p-8 h-full border border-slate-700 flex items-center justify-center">
+                <div className="bg-slate-900/50 rounded-lg p-8 border border-slate-700 h-[calc(100vh-240px)] flex items-center justify-center">
                   <div className="text-center space-y-6 max-w-md">
                     {!extractedFeatures && !isExtracting && (
                       <>
@@ -201,8 +201,8 @@ const FeatureExtraction = () => {
 
           {/* Features Panel */}
           <div className={`transition-all duration-500 ${showFeatures ? 'animate-slide-in-left' : ''}`}>
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6 h-[calc(100vh-160px)]">
-              <div className="space-y-4 h-full">
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 p-6">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white">Extracted Features</h2>
                   {extractedFeatures && (
@@ -213,7 +213,7 @@ const FeatureExtraction = () => {
                   )}
                 </div>
                 
-                <div className="bg-slate-900/50 rounded-lg border border-slate-700 h-full overflow-hidden">
+                <div className="bg-slate-900/50 rounded-lg border border-slate-700 h-[calc(100vh-240px)] overflow-hidden">
                   {extractedFeatures ? (
                     <div className="p-6 h-full overflow-y-auto">
                       <div className="space-y-3">
